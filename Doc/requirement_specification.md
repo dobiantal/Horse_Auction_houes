@@ -56,9 +56,15 @@ vásárlás tényét.
   * Belejentkezést követően tudja listázni az éppen folyó liciteket és tud licitálni is ezekre. 
   * Belejentkezést követően saját adatait tudja módosítani, törölni is tudja fiókját.
 ## 6. Követelménylista
-    | ID | Verzió | Név | Kifejtés |
-    | -- | ------ | --- | -------- |
-    | K01 | V1.0 | Felület | platformtól független módon elérhető legyen az alkalmazás a világ bármely részéről. |
-    | K02 | V1.0 | Jogosultságok | A rendszer kezelje le az üzleti folyamatokban felsorolt üzleti szereplőket megfelelő funkciókkal. |
-    | K03 | V1.0 | Új tétel | A kereskedelmi assziszten és a vezető jogosultsággal legyen lehetőség új tétel hozzáadására.
 
+| ID | Verzió | Név | Kifejtés |
+| -- | ------ | --- | -------- |
+| K01 | V1.0 | Felület | platformtól független módon elérhető legyen az alkalmazás a világ bármely részéről. |
+| K02 | V1.0 | Jogosultságok | A rendszer kezelje le az üzleti folyamatokban felsorolt üzleti szereplőket megfelelő funkciókkal. |
+| K03 | V1.0 | Új tétel | A kereskedelmi asszisztens és a vezető jogosultsággal legyen lehetőség új tétel hozzáadására. |
+| K04 | V1.0 | Tétel felülírása | A kereskedelmi asszisztens és a vezető jogosultsággal rendelkező felhasználók tudják felülírni a tétele rögzített adatait. |
+| K05 | V1.0 | Tétel törlése | A kereskedelmi asszisztens és a vezető jogosultsággal rendelkező felhasználók tudjanak tételt törölni a rendszerből. |
+| K06 | V1.0 | Eladási tanusítvány | A kereskedelmi asszisztens és a vezető jogosultsággal rendelkező felhasználók tudjanak eladási tanusítványt generálni. |
+| K07 | V1.0 | Ügyféladat kezelés | A kereskedelmi asszisztens és a vezető jogosultsággal rendelkező felhasználók férjenek hozzá bizonyos ügyféladatokhoz a kapcsolattartás szükségessége miatt. |
+| K08 | V1.0 | Regisztrációs | Az weboldal biztosítson regisztrációs platformot a licitálók számára.
+| K09 | V1.0 | Ügyféladat módosítás | A weboldal adjon lehetőséget a licitálók saját adatainak módosítására, illetve a fiók törlésére.
