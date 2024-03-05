@@ -1,5 +1,5 @@
 """
-ASGI config for Auction_house_app project.
+ASGI config for horse_auction_house project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Auction_house_app.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'horse_auction_house.settings')
 
 application = get_asgi_application()
