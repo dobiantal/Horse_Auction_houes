@@ -37,8 +37,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'Horses',
-    'Horse_images'
+    'Horse_images',
+    'Beeders',
+    'Bidder',
+    'Cities',
+    'Countries',
+    'Employee',
+    'Sale_state',
+    'Sport_specifications',
+
+
 ]
 
 MIDDLEWARE = [

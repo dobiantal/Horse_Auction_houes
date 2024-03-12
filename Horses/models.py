@@ -1,5 +1,11 @@
 from django.db import models
 
+import Sport_specifications
+from Beeders.models import Beeders
+from Bidder.models import Bidder
+from Sale_state.models import Sale_state
+
+
 class Horse(models.Model):
     id = models.BigAutoField(auto_created=True, primary_key=True)
     horse_name = models.CharField(max_length=100, null=False)
@@ -12,10 +18,10 @@ class Horse(models.Model):
     horse_highest_sport_result = models.CharField(max_length=255)
     actual_price = models.IntegerField(null=False)
     bid_start = models.DateTimeField(null=False)
-    breeder_id = models.BigIntegerField(null=False)
-    sport_specification_id = models.BigIntegerField(null=False)
-    sale_state = models.BigIntegerField(null=False)
-    bidder_id = models.BigIntegerField(null=False)
+    breeder_id = models.ForeignKey(Beeders,on_delete=models.CASCADE)
+    sport_specification_id = models.ForeignKey(Sport_specifications,on_delete=models.CASCADE)
+    sale_state_id = models.ForeignKey(Sale_state,on_delete=models.CASCADE)
+    bidder_id = models.ForeignKey(Bidder,on_delete=models.CASCADE)
 
 
     class Meta:

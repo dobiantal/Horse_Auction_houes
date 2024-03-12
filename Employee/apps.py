@@ -1,6 +1,6 @@
 from django.apps import AppConfig
-from rest_framework import serializers
 
-class HorsesConfig(AppConfig):
+
+class EmployeeConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'Horses'
+    name = 'Employee'
