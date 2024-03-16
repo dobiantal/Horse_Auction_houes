@@ -17,3 +17,4 @@ class Employee(AbstractUser):
 
     class Meta:
         ordering = ['id']
+
