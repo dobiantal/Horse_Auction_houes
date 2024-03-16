@@ -1,6 +1,6 @@
 from django.db import models
-from Countries import Countries
-from Cities import Cities
+from Countries.models import Countries
+from Cities.models import Cities
 
 class Bidder(models.Model):
     id = models.BigAutoField(primary_key=True, auto_created=True)

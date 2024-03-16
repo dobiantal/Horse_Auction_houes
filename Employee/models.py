@@ -1,6 +1,6 @@
 from django.db import models
-
-class Employee(models.Model):
+from django.contrib.auth.models import AbstractUser
+class Employee(AbstractUser):
     id = models.BigAutoField(primary_key=True, auto_created=True)
     Fname = models.CharField(max_length=100, null=False)
     Lname = models.CharField(max_length=100, null=False)
@@ -11,3 +11,6 @@ class Employee(models.Model):
     created_at = models.DateTimeField(null=False)
     updated_at = models.DateTimeField(null=False)
     deleted_at = models.DateTimeField(null=False)
+
+    class Meta:
+        ordering = ['id']

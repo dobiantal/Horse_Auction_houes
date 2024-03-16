@@ -1,6 +1,6 @@
 from django.db import models
 
-import Sport_specifications
+from Sport_specifications.models import Sport_specification
 from Beeders.models import Beeders
 from Bidder.models import Bidder
 from Sale_state.models import Sale_state
@@ -19,8 +19,8 @@ class Horse(models.Model):
     actual_price = models.IntegerField(null=False)
     bid_start = models.DateTimeField(null=False)
     breeder_id = models.ForeignKey(Beeders,on_delete=models.CASCADE)
-    sport_specification_id = models.ForeignKey(Sport_specifications,on_delete=models.CASCADE)
-    sale_state_id = models.ForeignKey(Sale_state,on_delete=models.CASCADE)
+    sport_specification_id = models.ForeignKey(Sport_specification,on_delete=models.CASCADE)
+    sale_state_id = models.ForeignKey(Sale_state,on_delete=models.CASCADE, default=1)
     bidder_id = models.ForeignKey(Bidder,on_delete=models.CASCADE)
 
 
