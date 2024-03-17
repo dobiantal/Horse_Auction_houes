@@ -1,3 +1,33 @@
-from django.shortcuts import render
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.exceptions import AuthenticationFailed
+from Cities.models import Cities
+from Cities.serializer import CitySerializer
+from Exceptions.projectExceptions import FailedInsertException
+from Employee.views import EmpIsLogedIn
 
-# Create your views here.
+class Insert_city(APIView):
+    def post(self,request):
+        if EmpIsLogedIn == True:
+            city = CitySerializer(data=request.data)
+            if city.is_valid():
+                city.save()
+                return Response({"message":"City add has been successful!"})
+            else:
+                raise FailedInsertException()
+class Get_All_City(APIView):
+    def get(self,request):
+        if EmpIsLogedIn == True:
+            cities = Cities.objects.all()
+            serialized = CitySerializer(cities)
+            return serialized.data
+        else:
+            raise AuthenticationFailed("Unauthenticated! Please login!")
+class Get_One_City(APIView):
+    def get(self,request, id):
+        if EmpIsLogedIn == True:
+            city = Cities.objects.filter(id=id).first()
+            serialized = CitySerializer(city)
+            return serialized.data
+        else:
+            raise AuthenticationFailed("Unauthenticated! Please login!")

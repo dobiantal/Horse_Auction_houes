@@ -1,10 +1,10 @@
 from django.urls import path
-from Employee.views import Registrate, LogIn, IsLogedIn,LogOut
+from Employee.views import EmpRegistrate, EmpLogIn, EmpIsLogedIn, EmpLogOut
 
 urlpatterns = [
-    path('registrate', Registrate.as_view()),
-    path('login', LogIn.as_view()),
-    path('user',IsLogedIn.as_view()),#Nem biztos hogy kell ha vissza tudok térni backenden belül.
-    path('logout',LogOut.as_view())
+    path('registrate', EmpRegistrate.as_view()),
+    path('login', EmpLogIn.as_view()),
+    path('user',EmpIsLogedIn.as_view()),#Nem biztos hogy kell ha vissza tudok térni backenden belül.
+    path('logout',EmpLogOut.as_view())
 
 ]
