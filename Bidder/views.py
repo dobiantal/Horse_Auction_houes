@@ -5,15 +5,17 @@ import jwt, datetime
 from Bidder.serializer import BidderSerializer
 from Bidder.models import Bidder
 from Employee.views import EmpIsLogedIn
-
+from Exceptions.projectExceptions import FailedUpdatingException,FailedDeleteexception,FailedInsertException
 class BidderRegistrate(APIView):
     def post(self,request):
         Bidderserializer = BidderSerializer(data=request.data)
-        Bidderserializer.is_valid(raise_exception=True)
-        Bidderserializer.save()
-        return Response({
-            "message":"Registration successful"
-        })
+        if Bidderserializer.is_valid():
+            Bidderserializer.save()
+            return Response({
+                "message":"Registration successful"
+            })
+        else:
+            raise FailedInsertException()
 class Bidder_Login(APIView):
     def post(self,request):
         username = request.data['username']
@@ -58,7 +60,7 @@ class Bidder_LogOut(APIView):
         return response
 class Get_all_Bidder(APIView):
     def get(self,request):
-        if EmpIsLogedIn == True:
+        if EmpIsLogedIn() == True:
             all = Bidder.objects.all()
             serialized = BidderSerializer(all)
             return serialized.data
@@ -66,9 +68,27 @@ class Get_all_Bidder(APIView):
             raise AuthenticationFailed('Unauthenticated! Please login!')
 class Get_one_Bidder(APIView):
     def get(self,request,id):
-        if EmpIsLogedIn == True:
+        if EmpIsLogedIn() == True:
            bideer = Bidder.objects.filter(id=id).first()
            serialized = BidderSerializer(bideer)
            return serialized.data
         else:
             raise AuthenticationFailed('Unauthenticated! Please login!')
+class Update_Bidder(APIView):
+    def post(self,request, id):
+        if Bidder_isLoggedIn() == True:
+            bidder = Bidder.objects.filter(id=id).first()
+            serialzered = BidderSerializer(data=bidder,instance=request.data)
+            if serialzered.is_valid():
+                serialzered.save()
+                return Response({"message":"Update has been successful!"})
+            else:
+                raise FailedUpdatingException()
+class Delete_Bidder(APIView):
+    def delete(self,request, id):
+        if Bidder_isLoggedIn() == True:
+            bidder = Bidder.objects.filter(id=id).first()
+            bidder.delete()
+            return Response({"message":"Delete has been successful!!"})
+        else:
+            raise AuthenticationFailed("Unauthenticated!!Please login!!")

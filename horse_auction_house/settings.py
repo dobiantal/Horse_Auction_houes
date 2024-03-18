@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'Employee',
     'Sale_state',
     'Sport_specifications',
+    'Policy'
 
 
 

@@ -7,7 +7,7 @@ class Employee(models.Model):
     account_name = models.CharField(max_length=100, null=False, unique=True)
     email = models.CharField(max_length=255, null=False)
     password = models.CharField(max_length=100, null=False)
-    policy_id = models.ForeignKey(Policy,on_delete=models.CASCADE)
+    policy_id = models.ForeignKey(Policy,on_delete=models.CASCADE, default=1)
     created_at = models.DateTimeField(null=False, auto_created=True)
     updated_at = models.DateTimeField(null=False, auto_created=True)
     deleted_at = models.DateTimeField(null=True)
