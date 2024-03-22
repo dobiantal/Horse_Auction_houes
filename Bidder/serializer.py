@@ -1,7 +1,11 @@
 from rest_framework import serializers
 from Bidder.models import Bidder
+from Countries.serializer import CountrySerializer
+from Cities.serializer import CitySerializer
 from django.contrib.auth.hashers import make_password
 class BidderSerializer(serializers.ModelSerializer):
+    city = CitySerializer(many=True)
+    country = CountrySerializer(many=True)
     class Meta:
         model = Bidder
         fields = '__all__'

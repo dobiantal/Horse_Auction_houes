@@ -17,6 +17,7 @@ class Horse(models.Model):
     bid_step = models.IntegerField(null=False)
     horse_highest_sport_result = models.CharField(max_length=255)
     actual_price = models.IntegerField(null=False)
+    onbid = models.BooleanField(default=False,null=False)
     bid_start = models.DateTimeField(null=False)
     breeder_id = models.ForeignKey(Beeders,on_delete=models.CASCADE)
     sport_specification_id = models.ForeignKey(Sport_specification,on_delete=models.CASCADE)

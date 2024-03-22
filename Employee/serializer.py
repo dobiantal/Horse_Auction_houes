@@ -1,8 +1,10 @@
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 from Employee.models import Employee
+from Policy.serializer import PolicySerializer
 
 class EmployeeSerializer(serializers.ModelSerializer):
+    policies = PolicySerializer(many=True)
     class Meta:
         model = Employee
         fields = '__all__'
