@@ -4,7 +4,6 @@ from Employee.models import Employee
 from Policy.serializer import PolicySerializer
 
 class EmployeeSerializer(serializers.ModelSerializer):
-    policies = PolicySerializer(many=True)
     class Meta:
         model = Employee
         fields = '__all__'
@@ -16,3 +15,8 @@ class EmployeeSerializer(serializers.ModelSerializer):
             instance.save()
         return instance
     """In this method change the password to hash code."""
+class EmpInnerJoinSerializer(serializers.ModelSerializer):
+    policies = PolicySerializer(many=True)
+    class Meta:
+        model = Employee
+        fields = '__all__'

@@ -2,56 +2,56 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from Beeders.serializer import BeederSerializer
 from Beeders.models import Beeders
-from Employee.views import EmpIsLogedIn
-from Exceptions.projectExceptions import FailedInsertException, FailedUpdatingException
-from rest_framework.exceptions import AuthenticationFailed
+from Authenticate.Check_emp import Check_emp_auth
+from Response_messages.Messages import Success, UnAuthenticated, BadModel
+from rest_framework import status
 class Insert_Beeder(APIView):
     def post(self,request):
-        if EmpIsLogedIn == True:
+        if Check_emp_auth(request) == True:
             serializer = BeederSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                return {"message":"Breeder add has been successful"}
+                Success("Breeder","insert")
             else:
-                raise FailedInsertException()
+                BadModel("Inserting")
         else:
-            raise AuthenticationFailed("UnAuthenticated! Please login")
+            return UnAuthenticated()
 class Get_All_Breeder(APIView):
     def get(self,request):
-        if EmpIsLogedIn == True:
+        if Check_emp_auth(request) == True:
             all = Beeders.objects.all()
-            serialized = BeederSerializer(all)
-            return serialized.data
+            serialized = BeederSerializer(all, many=True)
+            return Response(serialized.data,status.HTTP_200_OK)
         else:
-            raise AuthenticationFailed("UnAuthenticated! Please login")
+            UnAuthenticated()
 
 class Get_One_Breeder(APIView):
     def get(self,request, id):
-        if EmpIsLogedIn == True:
+        if Check_emp_auth(request) == True:
             breeder = Beeders.objects.filter(id=id).first()
             serialized = BeederSerializer(breeder)
-            return serialized
+            return Response(serialized.data,status.HTTP_200_OK)
         else:
-            raise AuthenticationFailed("UnAuthenticated! Please login")
+            UnAuthenticated()
 class Update_Breeder(APIView):
     def post(self,request,id):
-        if EmpIsLogedIn == True:
+        if Check_emp_auth(request) == True:
             breeder = Beeders.objects.filter(id=id).first()
             serialized = BeederSerializer(instance=breeder,data=request.data)
             if serialized.is_valid():
                 serialized.save()
-                return Response({"message":"Update has been successful!"})
+                Success("Breeder","update")
             else:
-                raise FailedUpdatingException()
+                BadModel("Updating")
         else:
-            raise AuthenticationFailed("UnAuthenticated! Please login")
+            UnAuthenticated()
 class Delete_Breeder(APIView):
     def delete(self,request,id):
-        if EmpIsLogedIn == True:
+        if Check_emp_auth(request) == True:
             breeder = Beeders.objects.filter(id=id).first()
             breeder.delete()
-            return Response({"message":"Breeder has been deleted!"})
+            Success("Breeder","delete")
         else:
-            raise AuthenticationFailed("UnAuthenticated! Please login")
+            UnAuthenticated()
 
 """Special query => Special class and fuction thet we want to filtering with differnt parameters in Breeder tabel"""

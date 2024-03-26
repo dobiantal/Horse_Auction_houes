@@ -6,8 +6,8 @@ from Employee.views import EmpIsLogedIn
 class Get_Sport_spec(APIView):
     def get(self,request):
         sport_spec = Sport_specification.objects.all()
-        serializered = Sport_specSerializer(sport_spec)
-        return Response(serializered)
+        serializered = Sport_specSerializer(sport_spec, many=True)
+        return Response(serializered.data)
 class Insert_sport_spec(APIView):
     def post(self,request):
         if EmpIsLogedIn() == True:

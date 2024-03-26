@@ -2,24 +2,24 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Horse_images
 from .serializer import Horse_imagesSerializer
-from Employee.views import EmpIsLogedIn
-
+from Authenticate.Check_emp import Check_emp_auth
+from Response_messages.Messages import Success, BadModel, UnAuthenticated
 class Add_picture(APIView):
     def post(self,request):
-        if EmpIsLogedIn() == True:
+        if Check_emp_auth(request) == True:
             serializered = Horse_imagesSerializer(data=request.data)
             if serializered.is_valid():
                 serializered.save()
-                return Response({'message':'Picture save has been saved!'})
+                Success("Horse image","added")
             else:
-                return Response({'message:':'Error! The picture uploading failed!'})
+                BadModel("picture inserting")
         else:
-            return Response({'message':'Unauthenticated! Please login!'})
+            UnAuthenticated()
 class Delete_image(APIView):
     def delete(self,request,id):
-        if EmpIsLogedIn() == True:
+        if Check_emp_auth(request) == True:
             image = Horse_images.objects().filter(id=id).first()
             image.delete()
-            return Response({'message':'The image has been deleted!'})
+            Success("Horse images", "delete picture")
         else:
-            return Response({'message':'Unauthenticated! Please login!'})
+            UnAuthenticated()

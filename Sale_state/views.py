@@ -7,8 +7,8 @@ class Get_Sale_State(APIView):
 
     def get(self,request):
         sale_state = Sale_state.objects.all()
-        serializered = Sale_stateSerializer(sale_state)
-        return Response(serializered)
+        serializered = Sale_stateSerializer(sale_state, many=True)
+        return Response(serializered.data)
 class Insert_sale_state(APIView):
     def post(self,request):
         if EmpIsLogedIn() == True:
