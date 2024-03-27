@@ -2,35 +2,36 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from Policy.models import Policy
 from Policy.serializer import PolicySerializer
-from Employee.views import EmpIsLogedIn
+from Authenticate.Check_emp import Check_emp_auth
+from Response_messages.Messages import Success, UnAuthenticated, BadModel
 class AddPolicy(APIView):
     def post(self,request):
-        if EmpIsLogedIn() == True:
+        if Check_emp_auth(request) == True:
             policy = PolicySerializer(data=request.data)
             if policy.is_valid():
                 policy.save()
-                return Response({'message':'Policy has been added!'})
+                Success("Policy","insert")
             else:
-                return Response({'message': 'Policy adding has been failed!'})
+                BadModel("Inserting")
         else:
-            return Response({'message':'Unauthenticated! Please login!'})
+            UnAuthenticated()
 class UpdatePolicy(APIView):
     def post(self,request,id):
-        if EmpIsLogedIn() == True:
+        if Check_emp_auth(request) == True:
             policy = Policy.objects.filter(id=id).first()
             serializerd = PolicySerializer(date=policy,instance=request.data)
             if serializerd.is_valid():
                 serializerd.save()
-                return Response({'message':'Policy has been updated!'})
+                Success("Policy","update")
             else:
-                return Response({'message': 'Policy updating has been failed!'})
+                BadModel("Update")
         else:
-            return Response({'message':'Unauthenticated! Please login!'})
+            UnAuthenticated()
 class DeletePolicy(APIView):
     def delete(self,requset,id):
-        if EmpIsLogedIn() == True:
+        if Check_emp_auth(requset) == True:
             policy = Policy.objects.filter(id=id).first()
             policy.delete()
-            return Response({'message':'Policy has been deleted!'})
+            Success("Policy","delete")
         else:
-            return Response({'message':'Unauthenticated! Please login!'})
+            UnAuthenticated()

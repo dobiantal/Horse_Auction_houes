@@ -1,63 +1,69 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import status
 from .models import Horse
 from .serializer import HorseSerializer, AllSerializer
-from Employee.views import EmpIsLogedIn
-from Bidder.views import Bidder_isLoggedIn
+from Authenticate.Check_emp import Check_emp_auth
+from Authenticate.Check_bidder import Check_bidder_auth
+from Response_messages.Messages import Success, UnAuthenticated, BadModel
 class Add_Horse(APIView):
     def post(self,request):
-        if EmpIsLogedIn() == True:
+        if Check_emp_auth(request) == True:
             serializerd = HorseSerializer(data=request.data)
             if serializerd.is_valid():
                 serializerd.save()
-                return Response({'message':'Horse has been added!'})
+                Success("Horse","insert")
             else:
-                return Response({'message':'Horse adding has been failed'})
+                BadModel("Inserting")
         else:
-            Response({'message':'Unauthenticated! Please login!'})
+            UnAuthenticated()
 class Update_Horse(APIView):
     def post(self,request,id):
-        if EmpIsLogedIn() == True:
+        if Check_emp_auth(request) == True:
             horse = Horse.objects().filter(id=id).first()
             serializerd = HorseSerializer(data=horse,instance=request.data)
             if serializerd.is_valid():
                 serializerd.save()
-                return Response({'message':'Uploading has been successful!'})
+                Success("Horse","update")
             else:
-                return Response({'message':'Uploading has been failed!'})
+                BadModel("Updating")
         else:
-            Response({'message': 'Unauthenticated! Please login!'})
+            UnAuthenticated()
 class Delete_Horse(APIView):
     def delete(self,request,id):
-        if EmpIsLogedIn() == True:
+        if Check_emp_auth(request) == True:
             horse = Horse.objects().filter(id=id).first()
             horse.delete()
-            return Response({'message':'Delete has been successful!'})
+            Success("Horse","delete")
         else:
-            Response({'message': 'Unauthenticated! Please login!'})
+            UnAuthenticated()
 class Update_price(APIView):
     def post(self,request):
-        if Bidder_isLoggedIn() == True:
-            horse = Horse.object().filtered(id=request.data.get('id')).update(actual_price=request.data.get('bid'))
-            serializered = HorseSerializer(horse)
-            if serializered.is_valid():
-                serializered.save()
-                return Response({'message':'Bid has been successful!'})
+        if Check_bidder_auth(request) == True:
+            actual_bid = Horse.objects().filter(id=request.data.get('id'))
+            if int(actual_bid) >= request.data.get('bid'):
+                return Response({"message":"To low bid. You have to take higher bid!"},status.HTTP_406_NOT_ACCEPTABLE)
             else:
-                return Response({'message':'Invalid bid! Please try again!'})
+                horse = Horse.object().filtered(id=request.data.get('id')).update(actual_price=request.data.get('bid'))
+                serializered = HorseSerializer(horse)
+                if serializered.is_valid():
+                    serializered.save()
+                    Success("Bid","update")
+                else:
+                    BadModel("Update bid")
         else:
-            Response({'message': 'Unauthenticated! Please login!'})
+            UnAuthenticated()
 class Get_all_horse(APIView):
     def get(self,request):
         horses = Horse.objects.all()
         serializered = AllSerializer(horses, many=True)
-        return Response(serializered.data)
+        return Response(serializered.data,status.HTTP_200_OK)
 
 class Get_only_OnBid(APIView):
     def get(self,request):
-        if Bidder_isLoggedIn() == True:
+        if Check_bidder_auth(request) == True:
             onbid_horses = Horse.objects().filter(onbid=True).all()
             serializered = AllSerializer(onbid_horses, many=True)
-            return Response(serializered.data)
+            return Response(serializered.data,status.HTTP_200_OK)
         else:
-            Response({'message': 'Unauthenticated! Please login!'})
+            UnAuthenticated()
