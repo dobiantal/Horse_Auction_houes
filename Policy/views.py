@@ -2,36 +2,36 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from Policy.models import Policy
 from Policy.serializer import PolicySerializer
-from Authenticate.Check_emp import Check_emp_auth
-from Response_messages.Messages import Success, UnAuthenticated, BadModel
-class AddPolicy(APIView):
+from Authenticate.Check_emp import Emp_auth_checker
+from Response_messages.Messages import Response_message
+class AddPolicy(APIView,Emp_auth_checker,Response_message):
     def post(self,request):
-        if Check_emp_auth(request) == True:
+        if self.Check_emp_auth(request) == True:
             policy = PolicySerializer(data=request.data)
             if policy.is_valid():
                 policy.save()
-                Success("Policy","insert")
+                self.Success("Policy","insert")
             else:
-                BadModel("Inserting")
+                self.BadModel("Inserting")
         else:
-            UnAuthenticated()
-class UpdatePolicy(APIView):
+            self.UnAuthenticated()
+class UpdatePolicy(APIView,Emp_auth_checker,Response_message):
     def post(self,request,id):
-        if Check_emp_auth(request) == True:
+        if self.Check_emp_auth(request) == True:
             policy = Policy.objects.filter(id=id).first()
             serializerd = PolicySerializer(date=policy,instance=request.data)
             if serializerd.is_valid():
                 serializerd.save()
-                Success("Policy","update")
+                self.Success("Policy","update")
             else:
-                BadModel("Update")
+                self.BadModel("Update")
         else:
-            UnAuthenticated()
-class DeletePolicy(APIView):
+            self.UnAuthenticated()
+class DeletePolicy(APIView,Emp_auth_checker,Response_message):
     def delete(self,requset,id):
-        if Check_emp_auth(requset) == True:
+        if self.Check_emp_auth(requset) == True:
             policy = Policy.objects.filter(id=id).first()
             policy.delete()
-            Success("Policy","delete")
+            self.Success("Policy","delete")
         else:
-            UnAuthenticated()
+            self.UnAuthenticated()

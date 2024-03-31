@@ -2,55 +2,54 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from Countries.models import Countries
 from Countries.serializer import CountrySerializer
-from Employee.views import EmpIsLogedIn
-from Authenticate.Check_emp import Check_emp_auth
-from Authenticate.Check_bidder import Check_bidder_auth
-from Response_messages.Messages import UnAuthenticated, Success, BadModel
+from Authenticate.Check_emp import Emp_auth_checker
+from Authenticate.Check_bidder import Bidder_auth_checker
+from Response_messages.Messages import Response_message
 from rest_framework import status
-class Insert_Country(APIView):
+class Insert_Country(APIView,Emp_auth_checker,Response_message):
     def post(self,request):
-        if Check_emp_auth(request) == True:
+        if self.Check_emp_auth(request) == True:
             serializered = CountrySerializer(data=request.data)
             if serializered.is_valid():
                 serializered.save()
-                Success("Country","added")
+                self.Success("Country","added")
             else:
-                BadModel("Inserting")
+                self.BadModel("Inserting")
         else:
-            UnAuthenticated()
-class Update_Country(APIView):
+            self.UnAuthenticated()
+class Update_Country(APIView,Emp_auth_checker,Response_message):
     def post(self,request,id):
-        if Check_emp_auth(request) == True:
+        if self.Check_emp_auth(request) == True:
             country = Countries.objects.filter(id=id).first()
             serialized = CountrySerializer(data=country,instance=request.data)
             if serialized.is_valid():
                 serialized.save()
-                Success("Country","update")
+                self.Success("Country","update")
             else:
-                BadModel("Updating")
+                self.BadModel("Updating")
         else:
-            UnAuthenticated()
-class Delete_Country(APIView):
+            self.UnAuthenticated()
+class Delete_Country(APIView,Emp_auth_checker,Response_message):
     def delete(self,request,id):
-        if Check_emp_auth(request) == True:
+        if self.Check_emp_auth(request) == True:
             country = Countries.objects.filter(id=id).first()
             country.delete()
-            Success("Country","delete")
+            self.Success("Country","delete")
         else:
-            UnAuthenticated()
-class Get_all_Countries(APIView):
+            self.UnAuthenticated()
+class Get_all_Countries(APIView,Emp_auth_checker,Bidder_auth_checker,Response_message):
     def get(self,request):
-        if Check_emp_auth(request) == True or Check_bidder_auth(request) == True:
+        if self.Check_emp_auth(request) == True or self.Check_bidder_auth(request) == True:
             country = Countries.objects.all()
             serialized = CountrySerializer(country, many=True)
             return Response(serialized.data,status.HTTP_200_OK)
         else:
-            UnAuthenticated()
-class Get_one_Country(APIView):
+            self.UnAuthenticated()
+class Get_one_Country(APIView,Emp_auth_checker,Bidder_auth_checker,Response_message):
     def get(self,request,id):
-        if Check_emp_auth(request) == True or Check_bidder_auth(request) == True:
+        if self.Check_emp_auth(request) == True or self.Check_bidder_auth(request) == True:
             country = Countries.objects.filter(id=id).first()
             serialized = CountrySerializer(country)
             return Response(serialized.data,status.HTTP_200_OK)
         else:
-            UnAuthenticated()
+            self.UnAuthenticated()

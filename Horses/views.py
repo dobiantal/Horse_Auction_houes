@@ -1,45 +1,48 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+
 from .models import Horse
 from .serializer import HorseSerializer, AllSerializer
-from Authenticate.Check_emp import Check_emp_auth
-from Authenticate.Check_bidder import Check_bidder_auth
-from Response_messages.Messages import Success, UnAuthenticated, BadModel
-class Add_Horse(APIView):
+
+from Authenticate.Check_emp import Emp_auth_checker
+from Authenticate.Check_bidder import Bidder_auth_checker
+from Response_messages.Messages import Response_message
+
+class Add_Horse(APIView,Emp_auth_checker,Response_message):
     def post(self,request):
-        if Check_emp_auth(request) == True:
+        if self.Check_emp_auth(request) == True:
             serializerd = HorseSerializer(data=request.data)
             if serializerd.is_valid():
                 serializerd.save()
-                Success("Horse","insert")
+                self.Success("Horse","insert")
             else:
-                BadModel("Inserting")
+                self.BadModel("Inserting")
         else:
-            UnAuthenticated()
-class Update_Horse(APIView):
+            self.UnAuthenticated()
+class Update_Horse(APIView,Emp_auth_checker,Response_message):
     def post(self,request,id):
-        if Check_emp_auth(request) == True:
+        if self.Check_emp_auth(request) == True:
             horse = Horse.objects().filter(id=id).first()
             serializerd = HorseSerializer(data=horse,instance=request.data)
             if serializerd.is_valid():
                 serializerd.save()
-                Success("Horse","update")
+                self.Success("Horse","update")
             else:
-                BadModel("Updating")
+                self.BadModel("Updating")
         else:
-            UnAuthenticated()
-class Delete_Horse(APIView):
+            self.UnAuthenticated()
+class Delete_Horse(APIView,Emp_auth_checker,Response_message):
     def delete(self,request,id):
-        if Check_emp_auth(request) == True:
+        if self.Check_emp_auth(request) == True:
             horse = Horse.objects().filter(id=id).first()
             horse.delete()
-            Success("Horse","delete")
+            self.Success("Horse","delete")
         else:
-            UnAuthenticated()
-class Update_price(APIView):
+            self.UnAuthenticated()
+class Update_price(APIView,Bidder_auth_checker,Response_message):
     def post(self,request):
-        if Check_bidder_auth(request) == True:
+        if self.Check_bidder_auth(request) == True:
             actual_bid = Horse.objects().filter(id=request.data.get('id'))
             if int(actual_bid) >= request.data.get('bid'):
                 return Response({"message":"To low bid. You have to take higher bid!"},status.HTTP_406_NOT_ACCEPTABLE)
@@ -48,22 +51,22 @@ class Update_price(APIView):
                 serializered = HorseSerializer(horse)
                 if serializered.is_valid():
                     serializered.save()
-                    Success("Bid","update")
+                    self.Success("Bid","update")
                 else:
-                    BadModel("Update bid")
+                    self.BadModel("Update bid")
         else:
-            UnAuthenticated()
+            self.UnAuthenticated()
 class Get_all_horse(APIView):
     def get(self,request):
         horses = Horse.objects.all()
         serializered = AllSerializer(horses, many=True)
         return Response(serializered.data,status.HTTP_200_OK)
 
-class Get_only_OnBid(APIView):
+class Get_only_OnBid(APIView,Bidder_auth_checker,Response_message):
     def get(self,request):
-        if Check_bidder_auth(request) == True:
+        if self.Check_bidder_auth(request) == True:
             onbid_horses = Horse.objects().filter(onbid=True).all()
             serializered = AllSerializer(onbid_horses, many=True)
             return Response(serializered.data,status.HTTP_200_OK)
         else:
-            UnAuthenticated()
+            self.UnAuthenticated()

@@ -74,7 +74,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'horse_auction_house.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
@@ -139,3 +138,5 @@ CORS_ALLOW_CREDENTIALS = True
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR,"media")
+
+

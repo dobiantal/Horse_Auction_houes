@@ -3,29 +3,29 @@ from rest_framework.views import APIView
 import jwt, datetime
 from Bidder.serializer import BidderSerializer
 from Bidder.models import Bidder
-from Authenticate.Check_emp import Check_emp_auth
-from Authenticate.Check_bidder import Check_bidder_auth
-from Response_messages.Messages import Success, UnAuthenticated, BadModel, NotFound, IncorretPW
+from Authenticate.Check_emp import Emp_auth_checker
+from Authenticate.Check_bidder import Bidder_auth_checker
+from Response_messages.Messages import Response_message
 from rest_framework import status
 
-class BidderRegistrate(APIView):
+class BidderRegistrate(APIView,Response_message):
     def post(self,request):
         Bidderserializer = BidderSerializer(data=request.data)
         if Bidderserializer.is_valid():
             Bidderserializer.save()
-            Success("Bidder","registration")
+            self.Success("Bidder","registration")
         else:
-            BadModel("Registration")
-class Bidder_Login(APIView):
+            self.BadModel("Registration")
+class Bidder_Login(APIView,Response_message):
     def post(self,request):
         username = request.data['username']
         password = request.data['password']
 
         bidder = Bidder.objects.filter(Username=username).first()
         if bidder is None:
-            NotFound("Bidder")
+            self.NotFound("Bidder")
         if not bidder.check_password(password):
-            IncorretPW()
+            self.IncorretPW()
         token_layers = {
             'id': bidder.id,
             'u_name':bidder.Username,
@@ -46,39 +46,39 @@ class Bidder_LogOut(APIView):
         response.delete_cookie('bid_token')
         response.data = {"message":"You have been logged out"},status.HTTP_200_OK
         return response
-class Get_all_Bidder(APIView):
+class Get_all_Bidder(APIView,Emp_auth_checker,Response_message):
     def get(self,request):
-        if Check_emp_auth(request) == True:
+        if self.Check_emp_auth(request) == True:
             all = Bidder.objects.all()
             serialized = BidderSerializer(all, many=True)
             return Response(serialized.data,status.HTTP_200_OK)
         else:
-            UnAuthenticated()
-class Get_one_Bidder(APIView):
+            self.UnAuthenticated()
+class Get_one_Bidder(APIView,Emp_auth_checker,Response_message):
     def get(self,request,id):
-        if Check_emp_auth(request) == True:
+        if self.Check_emp_auth(request) == True:
            bideer = Bidder.objects.filter(id=id).first()
            serialized = BidderSerializer(bideer)
            return serialized.data,status.HTTP_200_OK
         else:
-            UnAuthenticated()
-class Update_Bidder(APIView):
+            self.UnAuthenticated()
+class Update_Bidder(APIView,Bidder_auth_checker,Response_message):
     def post(self,request, id):
-        if Check_bidder_auth(request) == True:
+        if self.Check_bidder_auth(request) == True:
             bidder = Bidder.objects.filter(id=id).first()
             serialzered = BidderSerializer(data=bidder,instance=request.data)
             if serialzered.is_valid():
                 serialzered.save()
-                Success("Bidder","update")
+                self.Success("Bidder","update")
             else:
-                BadModel("Updating")
+                self.BadModel("Updating")
         else:
-            UnAuthenticated()
-class Delete_Bidder(APIView):
+            self.UnAuthenticated()
+class Delete_Bidder(APIView,Bidder_auth_checker,Response_message):
     def delete(self,request, id):
-        if Check_bidder_auth(request) == True:
+        if self.Check_bidder_auth(request) == True:
             bidder = Bidder.objects.filter(id=id).first()
             bidder.delete()
-            Success("Bidder","delete")
+            self.Success("Bidder","delete")
         else:
-            UnAuthenticated()
+            self.UnAuthenticated()

@@ -16,7 +16,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
         return instance
     """In this method change the password to hash code."""
 class EmpInnerJoinSerializer(serializers.ModelSerializer):
-    policies = PolicySerializer(many=True)
+    policy_id = PolicySerializer(many=True)
     class Meta:
         model = Employee
         fields = '__all__'

@@ -3,44 +3,44 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import Sport_specification
 from .serializer import Sport_specSerializer
-from Authenticate.Check_emp import Check_emp_auth
-from Response_messages.Messages import Success, UnAuthenticated, BadModel
+from Authenticate.Check_emp import Emp_auth_checker
+from Response_messages.Messages import Response_message
 
-class Get_Sport_spec(APIView):
+class Get_Sport_spec(APIView,Emp_auth_checker):
     def get(self,request):
-        if Check_emp_auth(request) == True:
+        if self.Check_emp_auth(request) == True:
             sport_spec = Sport_specification.objects.all()
             serializered = Sport_specSerializer(sport_spec, many=True)
             return Response(serializered.data,status.HTTP_200_OK)
-class Insert_sport_spec(APIView):
+class Insert_sport_spec(APIView,Emp_auth_checker,Response_message):
     def post(self,request):
-        if Check_emp_auth(request) == True:
+        if self.Check_emp_auth(request) == True:
             serializered = Sport_specSerializer(data=request.data)
             if serializered.is_valid():
                 serializered.save()
-                Success("Sale state","insert")
+                self.Success("Sale state","insert")
             else:
-                BadModel("Inserting")
+                self.BadModel("Inserting")
         else:
-            UnAuthenticated()
-class Update_sport_spec(APIView):
+            self.UnAuthenticated()
+class Update_sport_spec(APIView,Emp_auth_checker,Response_message):
     def post(self,request, id):
-        if Check_emp_auth(request) == True:
+        if self.Check_emp_auth(request) == True:
             sport_spec = Sport_specification.objects().filter(id=id).first()
             serializerd = Sport_specSerializer(data=sport_spec, instance=request.data)
             if serializerd.is_valid():
                 serializerd.save()
-                Success("Sport specification","update")
+                self.Success("Sport specification","update")
             else:
-                BadModel("Updating")
+                self.BadModel("Updating")
         else:
-            UnAuthenticated()
-class Delete_Sport_spec(APIView):
+            self.UnAuthenticated()
+class Delete_Sport_spec(APIView,Emp_auth_checker,Response_message):
     def delete(self,request, id):
-        if Check_emp_auth(request)== True:
+        if self.Check_emp_auth(request)== True:
             sport_spec = Sport_specification.objects().filter(id=id).first()
             sport_spec.delete()
-            Success("Sport specification", "delete")
+            self.Success("Sport specification", "delete")
         else:
-            UnAuthenticated()
+            self.UnAuthenticated()
 
