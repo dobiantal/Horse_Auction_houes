@@ -4,3 +4,4 @@
 * rest_framework
 * jwt token
 * django-corsheaders
+* channes_redis (It has been cerated the asyncron communication with different user.)
